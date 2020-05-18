@@ -42,11 +42,11 @@ class _QuizState extends State<Quiz> {
   }
 
   void startTimer() {
-    _timer = new Timer.periodic(const Duration(microseconds: 10), (Timer t) {
+    _timer = new Timer.periodic(const Duration(microseconds: 100), (Timer t) {
       if (!completed) {
         setState(() {
           if (timer >= 0.0) {
-            timer -= 0.001;
+            timer -= 0.0001;
           } else {
             if (currentQuestion < quizData.quizQuestions.length - 1) {
               timer = 10;

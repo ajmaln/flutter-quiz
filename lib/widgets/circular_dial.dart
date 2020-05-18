@@ -49,7 +49,7 @@ class InsetCircle extends StatelessWidget {
           ),
           child: Center(
             child: NotchCircle(
-              text: '${(percentage ~/ 10)}',
+              text: '${10 - (percentage ~/ 10)}',
             ),
           ),
         ),
