@@ -19,20 +19,12 @@ class Results extends StatelessWidget {
     if (correctAnswers > total / 2) {
       return "Good!";
     }
+    return "";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   title: Text(
-      //     'Quiz Results',
-      //     style: TextStyle(
-      //       color: Colors.grey.shade500,
-      //     ),
-      //   ),
-      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

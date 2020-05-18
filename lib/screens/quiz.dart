@@ -16,12 +16,37 @@ class Quiz extends StatefulWidget {
   _QuizState createState() => _QuizState();
 }
 
-class _QuizState extends State<Quiz> {
+class _QuizState extends State<Quiz> with TickerProviderStateMixin {
   @override
   void initState() {
-    this.getData();
     super.initState();
+    this.getData();
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 10),
+    )
+    ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            if (answers.length - 1 != currentQuestion) {
+              answers.add(null);
+            }
+            if (currentQuestion < quizData.quizQuestions.length - 1) {
+              currentQuestion++;
+              return;
+            }
+            completed = true;
+            _showCompletionDialog();
+          });
+          if (!completed) {
+            animationController.reset();
+            animationController.forward();
+          }
+        }
+      });
   }
+
+  AnimationController animationController;
 
   bool loading = true;
   QuizData quizData;
@@ -38,34 +63,7 @@ class _QuizState extends State<Quiz> {
       loading = false;
       quizData = qData;
     });
-    startTimer();
-  }
-
-  void startTimer() {
-    _timer = new Timer.periodic(const Duration(microseconds: 100), (Timer t) {
-      if (!completed) {
-        setState(() {
-          if (timer >= 0.0) {
-            timer -= 0.0001;
-          } else {
-            if (currentQuestion < quizData.quizQuestions.length - 1) {
-              timer = 10;
-              if (answers.length - 1 != currentQuestion) {
-                answers.add(null);
-              }
-              currentQuestion++;
-              return;
-            }
-            if (answers.length - 1 != currentQuestion) {
-              answers.add(null);
-            }
-            completed = true;
-            _showCompletionDialog();
-            _timer.cancel();
-          }
-        });
-      }
-    });
+    animationController.forward();
   }
 
   int getCorrectAnswers() {
@@ -119,7 +117,14 @@ class _QuizState extends State<Quiz> {
           child: !loading
               ? Column(
                   children: <Widget>[
-                    CircularDial(timer: timer),
+                    AnimatedBuilder(
+                        animation: animationController,
+                        builder: (BuildContext context, Widget child) {
+                          return CircularDial(
+                            timer: animationController,
+                          );
+                        }),
+                    // CircularDial(timer: timer),
                     Text(
                       quizData.quizQuestions[currentQuestion].questions,
                       textAlign: TextAlign.center,
@@ -145,7 +150,7 @@ class _QuizState extends State<Quiz> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    animationController.dispose();
     super.dispose();
   }
 }

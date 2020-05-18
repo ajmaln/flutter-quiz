@@ -6,7 +6,7 @@ import 'package:flutter_quiz/widgets/progress.dart';
 class CircularDial extends StatelessWidget {
   CircularDial({this.timer});
 
-  final double timer;
+  final Animation<double> timer;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class CircularDial extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: InsetCircle(
-            percentage: 100 - (timer * 10),
+            percentage: timer.value * 100,
           ),
         ),
       ),
